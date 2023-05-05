@@ -1,13 +1,11 @@
 
 """
-Name:       Wuilmel Wu Wu
-Email:      wuilmel.wuwu92@hunter.cuny.edu
+Name: Wuilmel Wu Wu
+Email: wuilmel.wuwu92@myhunter.cuny.edu
 Resources:  books, online resources and class materials
-Title:      Strategic School Building Plan
-URL:        https://www.myproject.com
+Title: Strategic School Building Plan
+URL: https://github.com/wuilmel/395project/blob/85a8f9a313424e455b6bdac12465e0648144bfb5/project.py
 """
-
-from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
@@ -20,21 +18,19 @@ import pandas as pd
 import plotly.express as px
 import geopandas as gpd
 import folium
-"""
-first_data = pd.read_csv("https://data.cityofnewyork.us/resource/wg9x-4ke6.csv")
 
-second_data = pd.read_csv("https://data.cityofnewyork.us/resource/45j8-f6um.csv")
-"""
-
-df1 = pd.read_csv("https://data.cityofnewyork.us/resource/wg9x-4ke6.csv", usecols = ['system_code', 'location_name', 'primary_address_line_1', 'state_code', 'x_coordinate',
-                                                                                     'y_coordinate', 'longitude', 'latitude', 'nta','geographical_district_code'])
+df1 = pd.read_csv("https://data.cityofnewyork.us/resource/wg9x-4ke6.csv", usecols = ['system_code',
+    'location_name', 'primary_address_line_1', 'state_code', 'x_coordinate',
+    'y_coordinate', 'longitude', 'latitude', 'nta','geographical_district_code'])
 
 df1.rename(columns = {'system_code': 'dbn'}, inplace=True)
 
-
-df2 = pd.read_csv("https://data.cityofnewyork.us/resource/45j8-f6um.csv", usecols = ['dbn', 'school_name', 'year', 'total_enrollment', 'grade_pk_half_day_full_day', 'grade_k', 'grade_1', 'grade_2', 'grade_3', 'grade_2',
-                                                                                     'grade_3', 'grade_4', 'grade_5', 'grade_6', 'grade_7', 'grade_8', 'grade_9', 'grade_10', 'grade_11', 'grade_12',  
-                                                                                     'students_with_disabilities', 'english_language_learners', 'poverty', 'economic_need_index'])
+df2 = pd.read_csv("https://data.cityofnewyork.us/resource/45j8-f6um.csv", usecols = ['dbn', 
+    'school_name', 'year', 'total_enrollment', 'grade_pk_half_day_full_day', 'grade_k',
+    'grade_1', 'grade_2', 'grade_3', 'grade_2',
+    'grade_3', 'grade_4', 'grade_5', 'grade_6', 'grade_7', 'grade_8',
+    'grade_9', 'grade_10', 'grade_11', 'grade_12',  
+    'students_with_disabilities', 'english_language_learners', 'poverty', 'economic_need_index'])
 
 merged_df = pd.merge(df2, df1, on=['dbn'])
 
@@ -42,9 +38,21 @@ df_merged = pd.merge(df2, df1, on=['dbn'])
 
 print(merged_df)
 
+#boxplot
+
 df3 = merged_df.groupby(['school_name', 'year'])['total_enrollment'].apply(list)
 
-sns.boxplot(x = 'school_name', y = 'total_enrollment', hue = 'year', data = merged_df)
+df3 = df3.reset_index()
+
+df4 = pd.DataFrame(df3['total_enrollment'].to_list())
+
+df4['school_name'] = df3['school_name']
+
+df4['year'] = df3['year']
+
+df4 = pd.melt(df4, id_vars=['school_name', 'year'], value_name='total_enrollment')
+
+sns.boxplot(x='school_name', y='total_enrollment', hue='year', data=df4)
 
 plt.title('Total Enrollment by School and Year')
 
@@ -203,7 +211,7 @@ fig = go.Figure()
 
 fig.add_trace(go.Scatter(x=X, y=y, mode='markers', name='Data'))
 
-fig.update_layout(title='Total Enrollment vs students_with_disabilities',
+fig.update_layout(title='Total Enrollment vs students with disabilities',
                   xaxis_title='students with Disabilities',
                   yaxis_title='Total Enrollment')
 
